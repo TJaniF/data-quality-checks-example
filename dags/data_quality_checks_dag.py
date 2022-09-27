@@ -146,7 +146,7 @@ with DAG(
         table_checks_active = SQLTableCheckOperator(
             task_id="table_checks_table_2_active",
             table="table_2",
-            partition_clause="IS_ACTIVE = TRUE",
+            partition_clause="'IS_ACTIVE' = TRUE",
             checks={
                 "at_least_one_active_check": {
                     "check_statement": "COUNT(*) > 0"
@@ -160,14 +160,13 @@ with DAG(
                 "active_customers_have_at_least_one_active_deployment_check": {
                     "check_statement": "active_deployments > 0"
                 }
-
             }
         )
 
         table_checks_inactive = SQLTableCheckOperator(
             task_id="table_checks_table_2_inactive",
             table="table_2",
-            partition_clause="IS_ACTIVE = FALSE",
+            partition_clause="'IS_ACTIVE' = FALSE",
             checks={
                 "inactive_customers_no_deployment_check": {
                     "check_statement": "active_deployments = 0"
