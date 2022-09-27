@@ -2,8 +2,9 @@ from airflow import DAG, Dataset
 from airflow.utils.task_group import TaskGroup
 from datetime import datetime, date
 from airflow.operators.empty import EmptyOperator
-from airflow.providers.common.sql.operators.sql import SQLColumnCheckOperator
-from airflow.providers.common.sql.operators.sql import SQLTableCheckOperator
+from airflow.providers.common.sql.operators.sql import (
+    SQLColumnCheckOperator, SQLTableCheckOperator
+)
 
 dataset_table_1 = Dataset('snowflake://table_1')
 dataset_table_2 = Dataset('snowflake://table_2')
@@ -143,7 +144,8 @@ with DAG(
             }
         )
 
-        table_checks_active = SQLTableCheckOperator(
+        # WIP partition_clause statement
+        """table_checks_active = SQLTableCheckOperator(
             task_id="table_checks_table_2_active",
             table="table_2",
             partition_clause="'IS_ACTIVE' = TRUE",
@@ -172,13 +174,11 @@ with DAG(
                     "check_statement": "active_deployments = 0"
                 }
             }
-        )
+        )"""
 
 
         column_checks >> [
-            table_checks_general,
-            table_checks_active,
-            table_checks_inactive
+            table_checks_general
         ]
 
     start >> [checking_table_1, checking_table_2] >> end
